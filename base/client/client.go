@@ -1,11 +1,14 @@
 package client
 
 import (
+	"cess-indexer/base/chain"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
+	"sync"
 
 	"github.com/pkg/errors"
 )
@@ -84,6 +87,41 @@ func QueryMinerFile(addr, hash string) (FileStat, error) {
 		return stats, errors.Wrap(err, "query file stats error")
 	}
 	return stats, nil
+}
+
+func QueryMinersCachedFile(hash string) ([]string, error) {
+	cachers, err := chain.GetChainCli().GetMiners()
+	if err != nil {
+		return nil, errors.Wrap(err, "query miners cached file error")
+	}
+	okCh := make(chan string, len(cachers))
+	wg := sync.WaitGroup{}
+	wg.Add(len(cachers))
+	for _, cacher := range cachers {
+		ip := fmt.Sprintf("%d.%d.%d.%d",
+			cacher.Ip.IPv4.Value[0],
+			cacher.Ip.IPv4.Value[1],
+			cacher.Ip.IPv4.Value[2],
+			cacher.Ip.IPv4.Value[3],
+		)
+		port := fmt.Sprint(cacher.Ip.IPv4.Port)
+		go func() {
+			defer wg.Done()
+			addr := ip + ":" + port
+			stat, err := QueryMinerFile(addr, hash)
+			if err != nil || len(stat.Shards) <= 0 {
+				return
+			}
+			okCh <- addr
+		}()
+	}
+	wg.Wait()
+	close(okCh)
+	list := make([]string, len(okCh))
+	for i := 0; i < len(list); i++ {
+		list[i] = <-okCh
+	}
+	return list, nil
 }
 
 func HttpRequest(method string, url string, headers Pairs, body io.Reader) (Response, error) {
