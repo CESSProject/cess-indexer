@@ -17,6 +17,7 @@
 package chain
 
 import (
+	"cess-indexer/logger"
 	"cess-indexer/utils"
 
 	"github.com/centrifuge/go-substrate-rpc-client/v4/types"
@@ -57,7 +58,6 @@ func (c *chainClient) GetStorageFromChain(target any, prefix, method string, arg
 		return ERR_RPC_CONNECTION
 	}
 	c.SetChainState(true)
-
 	key, err := types.CreateStorageKey(c.metadata, prefix, method, args...)
 	if err != nil {
 		return errors.Wrap(err, "get storage from chain error")
@@ -123,15 +123,28 @@ func (c *chainClient) GetMinerInfo() (CacherInfo, error) {
 	return info, nil
 }
 
-func (c *chainClient) GetMiners() ([]CacherInfo, error) {
-	var infos []CacherInfo
-	err := c.GetStorageFromChain(
-		&infos,
-		_CACHER,
-		_CACHER_CACHERS,
-	)
+func (c *chainClient) GetCachers() ([]CacherInfo, error) {
+	var list []CacherInfo
+	key, err := types.CreateStorageKey(c.metadata, _CACHER, _CACHER_CACHER)
 	if err != nil {
-		return infos, errors.Wrap(err, "get cachers info error")
+		return list, errors.Wrap(err, "get cachers info error")
 	}
-	return infos, nil
+	keys, err := c.api.RPC.State.GetKeysLatest(key)
+	if err != nil {
+		return list, errors.Wrap(err, "get cachers info error")
+	}
+	set, err := c.api.RPC.State.QueryStorageAtLatest(keys)
+	for _, elem := range set {
+		var c CacherInfo
+		if types.Decode(elem.Changes[0].StorageData, &c) != nil {
+			logger.Uld.Sugar().Error("get cachers info error,hash:", elem.Block)
+			continue
+		}
+		list = append(list, c)
+	}
+	if err != nil {
+		return list, errors.Wrap(err, "get cachers info error")
+	}
+
+	return list, nil
 }

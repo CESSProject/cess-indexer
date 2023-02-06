@@ -1,7 +1,7 @@
-	CacheDir=""
-	MaxCacheRate=""
-	Threshold=""
-	FreqWeight=""
-	ServerPort="8080"
-	AccountSeed=""
-	AccountID=""
+RpcAddr="ws://172.16.2.243:9944"
+ServerPort="8080"
+AccountSeed="plug increase image genius rabbit unable once sponsor tail castle wet fan"
+AccountID="cXgP2nH3GkFweiAUcPFWJjxRdiScooTneMgdowKe6Lfe3hQQ8"
+MaxTxPoolSize=128
+#order expiration(hours)
+ExpDate=24

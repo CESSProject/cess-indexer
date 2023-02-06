@@ -17,8 +17,7 @@ const (
 
 func SetupGinServer() {
 	// init
-
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
 	router := NewRouter()
 	httpServer := &http.Server{
 		Addr:           ":" + config.GetConfig().ServerPort,

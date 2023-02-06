@@ -40,13 +40,9 @@ type IChain interface {
 	// GetFileMetaInfo returns file metadata by specific fid
 	GetFileMetaInfo(fid string) (FileMetaInfo, error)
 	//
-	Register(ip, port string, price int64) (string, error)
+	GetCachers() ([]CacherInfo, error)
 	//
-	Update(ip, port string, price int64) (string, error)
-	//
-	Logout() (string, error)
-	//
-	GetMiners() ([]CacherInfo, error)
+	CreateAndSendCacheBills(bills []Bill) (string, error)
 }
 
 var cli IChain

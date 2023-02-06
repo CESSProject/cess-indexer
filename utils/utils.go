@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"errors"
 	"io"
+	"math"
 	"math/rand"
 	"net"
 	"net/http"
@@ -12,6 +13,8 @@ import (
 	"os/exec"
 	"strings"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/CESSProject/go-keyring"
 	"github.com/oschwald/geoip2-golang"
@@ -137,6 +140,20 @@ func ParseCountryFromIp(ip string) (string, string, error) {
 	return record.Country.Names["en"], record.City.Names["en"], nil
 }
 
+func ParseLocationByIp(ip string) (float64, float64, error) {
+	db, err := geoip2.FromBytes([]byte(geoLite2))
+	if err != nil {
+		return 0, 0, err
+	}
+	defer db.Close()
+
+	record, err := db.City(net.ParseIP(ip))
+	if err != nil {
+		return 0, 0, err
+	}
+	return record.Location.Latitude, record.Location.Longitude, nil
+}
+
 func VerifySign(acc string, data []byte, sign []byte) bool {
 	if len(sign) < 64 {
 		return false
@@ -147,4 +164,23 @@ func VerifySign(acc string, data []byte, sign []byte) bool {
 		arr[i] = sign[i]
 	}
 	return verkr.Verify(verkr.SigningContext(data), arr)
+}
+
+func EarthDistance(lat1, lng1, lat2, lng2 float64) float64 {
+	radius := 6371000.0
+	rad := math.Pi / 180
+	lat1, lng1 = lat1*rad, lng1*rad
+	lat2, lng2 = lat2*rad, lng2*rad
+	theta := lng2 - lng1
+	dist := math.Acos(
+		math.Sin(lat1)*math.Sin(lat2) +
+			math.Cos(lat1)*math.Cos(lat2)*math.Cos(theta))
+	return dist * radius
+}
+
+func CreateUUID() [16]byte {
+	u := uuid.NewV4().Bytes()
+	var res [16]byte
+	copy(res[:], u)
+	return res
 }

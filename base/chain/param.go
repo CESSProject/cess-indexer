@@ -40,6 +40,7 @@ const (
 	CACHER_REGISTER = "Cacher.register"
 	CACHER_UPDATE   = "Cacher.update"
 	CACHER_LOGOUT   = "Cacher.logout"
+	CACHER_PAY      = "Cacher.pay"
 )
 
 const (

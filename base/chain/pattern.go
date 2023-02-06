@@ -42,6 +42,7 @@ type Random [20]types.U8
 type Signature [65]types.U8
 type Filter [256]types.U64
 type Public [33]types.U8
+type Balance types.U128
 
 // file meta info
 type FileMetaInfo struct {
@@ -106,6 +107,17 @@ type BucketInfo struct {
 
 // cacher info
 type CacherInfo struct {
+	Acc        types.AccountID
 	Ip         IpAddress
-	Byte_price types.U128
+	Byte_price Balance
+}
+
+// bill
+type Bill struct {
+	Id              [16]byte
+	To              types.AccountID
+	Amount          types.U128
+	File_hash       types.Hash
+	Slice_hash      types.Hash
+	Expiration_time uint64
 }

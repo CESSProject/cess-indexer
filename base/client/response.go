@@ -7,7 +7,7 @@ type Response struct {
 
 type MinerStats struct {
 	GeoLocation string      `json:"geoLocation"`
-	BytePrice   uint        `json:"bytePrice"`
+	BytePrice   uint64      `json:"bytePrice"`
 	MinerStatus string      `json:"status"`
 	NetStats    NetStats    `json:"netStats"`
 	MemoryStats MemoryStats `json:"memStats"`
@@ -16,23 +16,23 @@ type MinerStats struct {
 }
 
 type FileStat struct {
-	Price      uint     `json:"price"`
+	Price      uint64   `json:"price"`
 	Size       uint64   `json:"size"`
 	ShardCount int      `josn:"shardCount"`
 	Shards     []string `json:"shards"`
 }
 
 type DiskStats struct {
-	Total     int64   `json:"total"`
-	Used      int64   `json:"used"`
-	Available int64   `json:"available"`
+	Total     uint64  `json:"total"`
+	Used      uint64  `json:"used"`
+	Available uint64  `json:"available"`
 	UseRate   float32 `json:"useRate"`
 }
 
 type MemoryStats struct {
-	Total     int64 `json:"total"`
-	Free      int64 `json:"free"`
-	Available int64 `json:"available"`
+	Total     uint64 `json:"total"`
+	Free      uint64 `json:"free"`
+	Available int64  `json:"available"`
 }
 
 type CPUStats struct {
@@ -41,6 +41,12 @@ type CPUStats struct {
 }
 
 type NetStats struct {
-	Download int64 `json:"cacheSpeed"`
-	Upload   int64 `json:"downloadSpeed"`
+	Download uint64 `json:"cacheSpeed"`
+	Upload   uint64 `json:"downloadSpeed"`
+}
+
+type CacheStat struct {
+	HitRate  float32 `json:"hitRate"`
+	MissRate float32 `json:"missRate"`
+	ErrRate  float32 `json:"errRate"`
 }

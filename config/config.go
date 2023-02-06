@@ -8,10 +8,12 @@ import (
 )
 
 type Config struct {
-	RpcAddr     string
-	ServerPort  string
-	AccountSeed string
-	AccountID   string
+	RpcAddr       string
+	ServerPort    string
+	AccountSeed   string
+	AccountID     string
+	ExpDate       int64
+	MaxTxPoolSize int
 }
 
 var DefaultConfigPath = "./config/config.toml"
