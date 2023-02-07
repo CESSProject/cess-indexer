@@ -42,7 +42,6 @@ type Random [20]types.U8
 type Signature [65]types.U8
 type Filter [256]types.U64
 type Public [33]types.U8
-type Balance types.U128
 
 // file meta info
 type FileMetaInfo struct {
@@ -50,29 +49,24 @@ type FileMetaInfo struct {
 	Index      types.U32
 	State      types.Bytes
 	UserBriefs []UserBrief
-	Backups    []Backup
+	//Names      []types.Bytes
+	BlockInfo []BlockInfo
+}
+
+// file block info
+type BlockInfo struct {
+	MinerId   types.U64
+	BlockSize types.U64
+	BlockNum  types.U32
+	BlockId   [68]types.U8
+	MinerIp   Ipv4Type
+	MinerAcc  types.AccountID
 }
 
 type UserBrief struct {
 	User        types.AccountID
 	File_name   types.Bytes
 	Bucket_name types.Bytes
-}
-
-// Backups
-type Backup struct {
-	Backup_index types.U8
-	State        types.Bool
-	Slice_info   []SliceInfo
-}
-
-// SliceInfo
-type SliceInfo struct {
-	Shard_id   SliceId
-	Slice_hash FileHash
-	Shard_size types.U64
-	Miner_ip   Ipv4Type
-	Miner_acc  types.AccountID
 }
 
 type Ipv4Type_Query struct {
@@ -82,10 +76,6 @@ type Ipv4Type_Query struct {
 	Port        types.U16
 }
 
-type IpAddress struct {
-	IPv4 Ipv4Type
-	IPv6 Ipv6Type
-}
 type Ipv4Type struct {
 	Index types.U8
 	Value [4]types.U8
@@ -95,6 +85,10 @@ type Ipv6Type struct {
 	Index types.U8
 	Value [8]types.U16
 	Port  types.U16
+}
+type IpAddress struct {
+	Ipv4Type
+	Ipv6Type
 }
 
 type BucketInfo struct {
@@ -107,9 +101,9 @@ type BucketInfo struct {
 
 // cacher info
 type CacherInfo struct {
-	Acc        types.AccountID
-	Ip         IpAddress
-	Byte_price Balance
+	Acc       types.AccountID
+	Ip        Ipv4Type
+	BytePrice types.U128
 }
 
 // bill

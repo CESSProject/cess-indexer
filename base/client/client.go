@@ -25,7 +25,7 @@ type AuthReq struct {
 
 func GenerateToken(addr, hash, bid string, sign []byte) (string, error) {
 	var token string
-	u, err := url.JoinPath("http://"+addr, "gen")
+	u, err := url.JoinPath("http://"+addr, "auth", "gen")
 	if err != nil {
 		return token, errors.Wrap(err, "generate token error")
 	}

@@ -19,8 +19,10 @@ package chain
 import (
 	"cess-indexer/logger"
 	"cess-indexer/utils"
+	"log"
 
 	"github.com/centrifuge/go-substrate-rpc-client/v4/types"
+	"github.com/centrifuge/go-substrate-rpc-client/xxhash"
 	"github.com/pkg/errors"
 )
 
@@ -92,6 +94,9 @@ func (c *chainClient) GetFileMetaInfo(fid string) (FileMetaInfo, error) {
 	if err != nil {
 		return data, errors.Wrap(err, "get file metadata error")
 	}
+	if len(data.BlockInfo) == 0 || data.Size == 0 {
+		return data, errors.Wrap(errors.New("invalid file metadata"), "get file metadata error")
+	}
 	return data, nil
 }
 
@@ -109,42 +114,31 @@ func (c *chainClient) GetAccountInfo() (types.AccountInfo, error) {
 	return info, nil
 }
 
-func (c *chainClient) GetMinerInfo() (CacherInfo, error) {
-	var info CacherInfo
-	err := c.GetStorageFromChain(
-		&info,
-		_CACHER,
-		_CACHER_CACHER,
-		[]byte(c.GetIncomeAccount()),
-	)
-	if err != nil {
-		return info, errors.Wrap(err, "get cacher info error")
-	}
-	return info, nil
-}
-
 func (c *chainClient) GetCachers() ([]CacherInfo, error) {
 	var list []CacherInfo
-	key, err := types.CreateStorageKey(c.metadata, _CACHER, _CACHER_CACHER)
-	if err != nil {
-		return list, errors.Wrap(err, "get cachers info error")
-	}
+	key := createPrefixedKey(_CACHER_CACHER, _CACHER)
 	keys, err := c.api.RPC.State.GetKeysLatest(key)
 	if err != nil {
 		return list, errors.Wrap(err, "get cachers info error")
 	}
 	set, err := c.api.RPC.State.QueryStorageAtLatest(keys)
-	for _, elem := range set {
-		var c CacherInfo
-		if types.Decode(elem.Changes[0].StorageData, &c) != nil {
-			logger.Uld.Sugar().Error("get cachers info error,hash:", elem.Block)
-			continue
-		}
-		list = append(list, c)
-	}
 	if err != nil {
 		return list, errors.Wrap(err, "get cachers info error")
 	}
-
+	for _, elem := range set {
+		for _, change := range elem.Changes {
+			var cacher CacherInfo
+			if err := types.Decode(change.StorageData, &cacher); err != nil {
+				logger.Uld.Sugar().Error("get cachers info error,hash:", err)
+				log.Println(err)
+				continue
+			}
+			list = append(list, cacher)
+		}
+	}
 	return list, nil
+}
+
+func createPrefixedKey(method, prefix string) []byte {
+	return append(xxhash.New128([]byte(prefix)).Sum(nil), xxhash.New128([]byte(method)).Sum(nil)...)
 }

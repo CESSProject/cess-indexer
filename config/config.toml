@@ -1,5 +1,5 @@
 RpcAddr="ws://172.16.2.243:9944"
-ServerPort="8080"
+ServerPort="8081"
 AccountSeed="plug increase image genius rabbit unable once sponsor tail castle wet fan"
 AccountID="cXgP2nH3GkFweiAUcPFWJjxRdiScooTneMgdowKe6Lfe3hQQ8"
 MaxTxPoolSize=128

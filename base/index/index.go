@@ -29,7 +29,7 @@ type BID [16]byte
 
 type CacherFactor struct {
 	Account   types.AccountID `json:"account"`
-	BytePrice chain.Balance   `json:"bytePrice"`
+	BytePrice types.U128      `json:"bytePrice"`
 	Distance  float64         `json:"distance"`
 }
 
@@ -78,6 +78,8 @@ func InitIndexer() {
 		records: make(map[BID]string),
 		pool:    make(chan chain.Bill, maxSize),
 	}
+	go WatchCachers()
+	go BillServer()
 }
 
 func (p *TxPool) Put(bill chain.Bill) {
@@ -192,16 +194,16 @@ func WatchCachers() {
 		}
 		for _, c := range cachers {
 			ip := fmt.Sprintf("%d.%d.%d.%d",
-				c.Ip.IPv4.Value[0],
-				c.Ip.IPv4.Value[1],
-				c.Ip.IPv4.Value[2],
-				c.Ip.IPv4.Value[3],
+				c.Ip.Value[0],
+				c.Ip.Value[1],
+				c.Ip.Value[2],
+				c.Ip.Value[3],
 			)
-			port := fmt.Sprint(c.Ip.IPv4.Port)
+			port := fmt.Sprint(c.Ip.Port)
 			if v, ok := GetCachers().Load(ip + ":" + port); ok {
 				cf := v.(CacherFactor)
-				if cf.BytePrice.Cmp(c.Byte_price.Int) != 0 {
-					cf.BytePrice = c.Byte_price
+				if cf.BytePrice.Cmp(c.BytePrice.Int) != 0 {
+					cf.BytePrice = c.BytePrice
 					GetCachers().Store(ip+":"+port, cf)
 				}
 				continue
@@ -213,7 +215,7 @@ func WatchCachers() {
 			}
 			cf := CacherFactor{
 				Account:   c.Acc,
-				BytePrice: c.Byte_price,
+				BytePrice: c.BytePrice,
 				Distance:  dist,
 			}
 			GetCachers().Store(ip+":"+port, cf)
@@ -250,16 +252,13 @@ func CreateCacheBill(cacher, fhash, shash string, size uint64, exp time.Duration
 	if err != nil {
 		return chain.Bill{}, errors.Wrap(err, "create cache bill error")
 	}
-	hsh, err := hex.DecodeString(shash)
-	if err != nil {
-		return chain.Bill{}, errors.Wrap(err, "create cache bill error")
-	}
+	hsh := []byte(shash)
 	return chain.Bill{
 		Id:              utils.CreateUUID(),
 		To:              cf.Account,
 		Amount:          types.NewU128(*b.Mul(cf.BytePrice.Int, b.SetUint64(size))),
 		File_hash:       types.NewHash(hfh),
-		Slice_hash:      types.NewHash(hsh),
+		Slice_hash:      types.NewHash(hsh[36:]),
 		Expiration_time: uint64(time.Now().Add(exp).Unix()),
 	}, nil
 }
