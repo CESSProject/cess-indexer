@@ -84,8 +84,7 @@ func GenerateFileToken(cacher, hexBid string) (map[string]string, resp.Error) {
 	if err != nil {
 		return resMap, resp.NewError(400, errors.Wrap(err, "generate file token error"))
 	}
-	resMap["url"] = "http://" + cacher + "/download/file"
-	resMap["token"] = token
+	resMap["url"] = "http://" + cacher + "/download/file/" + token
 	return resMap, nil
 }
 

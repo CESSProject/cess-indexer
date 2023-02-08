@@ -16,10 +16,9 @@ type MinerStats struct {
 }
 
 type FileStat struct {
-	Price      uint64   `json:"price"`
-	Size       uint64   `json:"size"`
-	ShardCount int      `josn:"shardCount"`
-	Shards     []string `json:"shards"`
+	Cached bool   `json:"cached"`
+	Price  uint64 `json:"price"`
+	Size   uint64 `json:"size"`
 }
 
 type DiskStats struct {

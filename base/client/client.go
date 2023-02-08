@@ -103,7 +103,7 @@ func QueryMinersCachedFile(hash string, cachers interface {
 			defer wg.Done()
 			token <- struct{}{}
 			stat, err := QueryMinerFile(hash, key.(string))
-			if err != nil || len(stat.Shards) <= 0 {
+			if err != nil || stat.Size <= 0 {
 				logger.Uld.Sugar().Error("query cachers cached file error", err)
 				<-token
 				return

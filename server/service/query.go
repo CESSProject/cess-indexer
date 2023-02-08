@@ -12,19 +12,3 @@ func QueryAllCachers() map[string]index.CacherFactor {
 	})
 	return res
 }
-
-// func QueryCacherCachedFiles(addr string) ([]string, resp.Error) {
-// 	files, err := client.QueryMinerCacheFiles(addr)
-// 	if err != nil {
-// 		return nil, resp.NewError(500, err)
-// 	}
-// 	return files, nil
-// }
-
-// func QueryFileStat(addr, hash string) (client.FileStat, resp.Error) {
-// 	stat, err := client.QueryMinerFile(addr, hash)
-// 	if err != nil {
-// 		return stat, resp.NewError(500, err)
-// 	}
-// 	return stat, nil
-// }
