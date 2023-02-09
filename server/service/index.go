@@ -34,7 +34,7 @@ func CreateCacheBill(fhash, shash string) (map[string]string, resp.Error) {
 	}
 	resMap["BID"] = hex.EncodeToString(bid[:])
 	resMap["cacherAddr"] = cacher
-	resMap["tips"] = "please get token after 15 s"
+	resMap["tips"] = "please get token after about 15 s"
 	return resMap, nil
 }
 
@@ -57,7 +57,7 @@ func CreateCacheBillBySliceIndex(fhash string, i int) (map[string]string, resp.E
 	}
 	resMap["BID"] = hex.EncodeToString(bid[:])
 	resMap["cacherAddr"] = cacher
-	resMap["tips"] = "please get token after 15 s"
+	resMap["tips"] = "please get token after about 15 s"
 	return resMap, nil
 }
 

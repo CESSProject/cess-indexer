@@ -9,16 +9,30 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type OrderReq struct {
+	FileHash  string `json:"fid"`
+	SliceHash string `json:"sname,omitempty"`
+	Index     string `json:"sindex,omitempty"`
+}
+
+type TokenReq struct {
+	Cacher string `json:"cacher"`
+	BID    string `json:"BID"`
+}
+
 func CreateBillHandler(c *gin.Context) {
-	fhash := c.PostForm("filehash")
-	shash := c.PostForm("slicehash")
-	index := c.PostForm("index")
-	if fhash == "" || (shash == "" && index == "") {
+	var orderReq OrderReq
+	e := c.BindJSON(&orderReq)
+	if e != nil {
 		resp.RespError(c, resp.NewError(400, errors.New("bad params")))
 		return
 	}
-	if shash != "" {
-		res, err := service.CreateCacheBill(fhash, shash)
+	if orderReq.FileHash == "" || (orderReq.SliceHash == "" && orderReq.Index == "") {
+		resp.RespError(c, resp.NewError(400, errors.New("bad params")))
+		return
+	}
+	if orderReq.SliceHash != "" {
+		res, err := service.CreateCacheBill(orderReq.FileHash, orderReq.SliceHash)
 		if err != nil {
 			resp.RespError(c, err)
 			return
@@ -26,12 +40,12 @@ func CreateBillHandler(c *gin.Context) {
 		resp.RespOk(c, res)
 		return
 	}
-	i, e := strconv.Atoi(index)
+	i, e := strconv.Atoi(orderReq.Index)
 	if e != nil {
 		resp.RespError(c, resp.NewError(400, e))
 		return
 	}
-	res, err := service.CreateCacheBillBySliceIndex(fhash, i)
+	res, err := service.CreateCacheBillBySliceIndex(orderReq.FileHash, i)
 	if err != nil {
 		resp.RespError(c, err)
 		return
@@ -40,13 +54,13 @@ func CreateBillHandler(c *gin.Context) {
 }
 
 func GenerateFileTokenHandler(c *gin.Context) {
-	cacher := c.PostForm("cacher")
-	bid := c.PostForm("id")
-	if cacher == "" || bid == "" {
+	var tokenReq TokenReq
+	c.BindJSON(&tokenReq)
+	if tokenReq.Cacher == "" || tokenReq.BID == "" {
 		resp.RespError(c, resp.NewError(400, errors.New("bad params")))
 		return
 	}
-	res, err := service.GenerateFileToken(cacher, bid)
+	res, err := service.GenerateFileToken(tokenReq.Cacher, tokenReq.BID)
 	if err != nil {
 		if err.Status() == 0 {
 			resp.RespOkWithFlag(c, false, res)
