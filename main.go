@@ -19,12 +19,6 @@ func main() {
 	if err := chain.InitChainClient(config.GetConfig()); err != nil {
 		log.Fatal("init chain client error", err)
 	}
-
-	//test chain
-	if err := chain.InitTestChainClient(); err != nil {
-		log.Fatal("init chain client error", err)
-	}
-
 	index.InitIndexer()
 	server.SetupGinServer()
 }

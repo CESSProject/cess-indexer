@@ -16,7 +16,7 @@ import (
 
 func CreateCacheBill(fhash, shash string) (map[string]string, resp.Error) {
 	resMap := make(map[string]string)
-	fmeta, err := chain.GetTestChainCli().GetFileMetaInfo(fhash)
+	fmeta, err := chain.GetChainCli().GetFileMetaInfo(fhash)
 	if err != nil {
 		return resMap, resp.NewError(500, errors.Wrap(err, "create cache bill error"))
 	}
@@ -40,7 +40,7 @@ func CreateCacheBill(fhash, shash string) (map[string]string, resp.Error) {
 
 func CreateCacheBillBySliceIndex(fhash string, i int) (map[string]string, resp.Error) {
 	resMap := make(map[string]string)
-	fmeta, err := chain.GetTestChainCli().GetFileMetaInfo(fhash)
+	fmeta, err := chain.GetChainCli().GetFileMetaInfo(fhash)
 	if err != nil {
 		return resMap, resp.NewError(500, errors.Wrap(err, "create cache bill error"))
 	}

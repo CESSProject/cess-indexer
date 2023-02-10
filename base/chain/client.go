@@ -81,29 +81,6 @@ func InitChainClient(conf config.Config) error {
 	return nil
 }
 
-// test chain
-var testCli IChain
-
-func GetTestChainCli() IChain {
-	return testCli
-}
-
-func InitTestChainClient() error {
-	var err error
-	testCli, err = NewChainClient(
-		"wss://testnet-rpc0.cess.cloud/ws/",
-		"lunar talent spend shield blade when dumb toilet drastic unique taxi water",
-		"cXgZo3RuYkAGhhvCHjAcc9FU13CG44oy8xW6jN39UYvbBaJx5",
-		TimeOut_WaitBlock,
-	)
-	if err != nil {
-		return errors.Wrap(err, "init chain client error")
-	}
-	return nil
-}
-
-//
-
 func NewChainClient(rpcAddr, secret, incomeAcc string, t time.Duration) (IChain, error) {
 	var (
 		err error
