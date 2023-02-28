@@ -1,6 +1,6 @@
 # cess-indexer
 ## Introduction
-indecer is a simple cacher search program. It only needs simple configuration to run the program to obtain services. Please run the program in the Linux operating system. Before doing so, please make sure that the Golang environment is installed on your machine.
+indexer is a simple cacher search program. It only needs simple configuration to run the program to obtain services. Please run the program in the Linux operating system. Before doing so, please make sure that the Golang environment is installed on your machine.
 ## Start
 1. First, you need to make a simple configuration. The configuration file is config.toml under the config directory,Please fill in all configuration options.
 ```yaml
