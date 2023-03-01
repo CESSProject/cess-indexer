@@ -1,4 +1,4 @@
-RpcAddr="ws://172.16.2.243:9944"
+RpcAddr="wss://devnet-rpc.cess.cloud/ws/"
 ServerPort="8081"
 AccountSeed="plug increase image genius rabbit unable once sponsor tail castle wet fan"
 AccountID="cXgP2nH3GkFweiAUcPFWJjxRdiScooTneMgdowKe6Lfe3hQQ8"

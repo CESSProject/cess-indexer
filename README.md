@@ -5,7 +5,7 @@ indexer is a simple cacher search program. It only needs simple configuration to
 1. First, you need to make a simple configuration. The configuration file is config.toml under the config directory,Please fill in all configuration options.
 ```yaml
 #CESS network ws address
-RpcAddr="ws://172.16.2.243:9944"
+RpcAddr="wss://devnet-rpc.cess.cloud/ws/"
 #You indexer server port
 ServerPort="8081"
 #You CESS account and seed
