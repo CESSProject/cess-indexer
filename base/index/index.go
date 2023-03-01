@@ -131,6 +131,9 @@ func BillServer() {
 		}
 		go func() {
 			bills := GetOrders().GetBills()
+			if len(bills)==0{
+				return
+			}
 			txhash, err := chain.GetChainCli().CreateAndSendCacheBills(bills)
 			if err != nil {
 				logger.Uld.Sugar().Error(err)
