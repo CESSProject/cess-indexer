@@ -18,6 +18,7 @@ ExpDate=24
 ```
 2. Then you can go back to the project main directory and use the command `go run main.go` to start the service
 ## Unit Test
+You can use the test samples in the test directory for unit testing. Note that you should set the configuration file before testing
 ```shell
 cd test
 go test indexer_test.go
