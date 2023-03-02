@@ -17,6 +17,11 @@ MaxTxPoolSize=128
 ExpDate=24
 ```
 2. Then you can go back to the project main directory and use the command `go run main.go` to start the service
+## Unit Test
+```shell
+cd test
+go test 
+```
 
 ## API
 
