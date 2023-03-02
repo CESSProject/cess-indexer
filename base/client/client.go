@@ -102,7 +102,7 @@ func QueryMinersCachedFile(hash string, cachers interface {
 		ants.Submit(func() {
 			defer wg.Done()
 			token <- struct{}{}
-			stat, err := QueryMinerFile(hash, key.(string))
+			stat, err := QueryMinerFile(key.(string)，hash)
 			if err != nil || stat.Size <= 0 {
 				logger.Uld.Sugar().Error("query cachers cached file error", err)
 				<-token
