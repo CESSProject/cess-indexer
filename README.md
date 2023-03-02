@@ -20,7 +20,7 @@ ExpDate=24
 ## Unit Test
 ```shell
 cd test
-go test 
+go test indexer_test.go
 ```
 
 ## API
