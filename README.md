@@ -23,6 +23,17 @@ You can use the test samples in the test directory for unit testing. Note that y
 cd test
 go test indexer_test.go
 ```
+## Code Walkthrough
+1. The user calls the CreateCacheBill service through the http protocol to generate a new cache order.Then the data will be stored in the cache pool. When the cache pool is full or reaches the predetermined time, it will be submitted to the blockchain together.
+https://github.com/CESSProject/cess-indexer/blob/87325c6f5da41e7682d0c065d2f59684dd795ff2/server/service/index.go#L17-L39
+2. The user can also call the CreateCacheBillBySliceIndex method to create a cache order. The difference from the former is that the file partition index is used instead of the hash value to complete the location.
+https://github.com/CESSProject/cess-indexer/blob/87325c6f5da41e7682d0c065d2f59684dd795ff2/server/service/index.go#L41-L62
+The two services are called through the same URL. The only difference is that you choose to use the hash or sine parameter.When creating an bill, all active miners on the blockchain will be queried, and the miners who have cached the file fragments will be preferentially selected to provide download services. If there are multiple miners, the miners with the best unit price and distance will be selected first.
+https://github.com/CESSProject/cess-indexer/blob/87325c6f5da41e7682d0c065d2f59684dd795ff2/base/index/index.go#L269-L284
+3. After the cache bill is created, users can call the GenerateFileToken service through HTTP request to obtain the download link according to the response data obtained previously.
+https://github.com/CESSProject/cess-indexer/blob/87325c6f5da41e7682d0c065d2f59684dd795ff2/server/service/index.go#L64-L89
+At this time, the indexer will send a request to the cache to generate a token. After receiving the response data, the indexer will splice the cache file download address and the token into a download link and return.
+https://github.com/CESSProject/cess-indexer/blob/87325c6f5da41e7682d0c065d2f59684dd795ff2/base/client/client.go#L26-L45
 
 ## API
 
